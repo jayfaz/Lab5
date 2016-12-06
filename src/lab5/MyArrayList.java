@@ -69,11 +69,11 @@ public class MyArrayList implements MyList {
 
 	@Override
 	public Comparable get(int index) {
-		if(index < 1 || index > size()) {
+		if(index < 0 || index >= size()) {
 			System.out.println("Not a valid index");
-			return null;
+			return -1;
 		} else {
-			return array[index -1];
+			return array[index];
 		}
 	}
 
@@ -189,6 +189,9 @@ public class MyArrayList implements MyList {
 	}
 	//http://howtodoinjava.com/algorithm/merge-sort-java-example/
 	public Comparable[] mergeSort(Comparable[] list) {
+		if(list.length < 2) {
+			return list;
+		}
 		Comparable[] left = new Comparable[list.length / 2];
 		Comparable[] right = new Comparable[list.length - left.length];
 		System.arraycopy(list, 0, left, 0, left.length);
@@ -197,7 +200,6 @@ public class MyArrayList implements MyList {
 		mergeSort(right);
 		merge(left, right, list);
 		return list;
-		
 	}
 	
 	private void merge(Comparable[] left, Comparable[] right, Comparable[] result) {
@@ -205,14 +207,16 @@ public class MyArrayList implements MyList {
 		int counterRight = 0;
 		int counter = 0;
 		while(counterLeft < left.length && counterRight < right.length) {
-			if(left[counterLeft].compareTo(right[counterRight]) > 0) {
-				result[counter] = left[counterLeft];
-				counterLeft++;
-			} else {
-				result[counter] = right[counterRight];
-				counterRight++;
-			}
-			counter++;
+			if(left[counterLeft] != null && right[counterRight] != null) {
+				if(left[counterLeft].compareTo(right[counterRight]) < 0) {
+					result[counter] = left[counterLeft];
+					counterLeft++;
+				} else {
+					result[counter] = right[counterRight];
+					counterRight++;
+				}
+				counter++;
+			} 
 		}
 		System.arraycopy(left, counterLeft, result, counter, left.length - counterLeft);
         System.arraycopy(right, counterRight, result, counter, right.length - counterRight);
@@ -321,12 +325,48 @@ public class MyArrayList implements MyList {
         }
     }
 	
-	public void bucketSort() {
-		
+	public void bucketSort(int maxVal) {
+		int [] bucket = new int[maxVal+1]; 
+	    for (int i = 0; i < bucket.length; i++) {
+	         bucket[i]=0;
+	    }
+	    for (int i = 0; i < array.length; i++) {
+	         bucket[(int) array[i]]++;
+	    }
+	    int outPos=0;
+	    for (int i = 0; i < bucket.length; i++) {
+	    	for (int j = 0; j < bucket[i]; j++) {
+	    		array[outPos++]=i;
+	    	}
+	    }
 	}
 	
 	public void radixSort() {
-		
+		Comparable m = array[0];
+		int exp = 1;
+		int n = size();
+        int[] b = new int[10];
+        for (int i = 1; i < n; i++)
+            if (array[i].compareTo(m) > 0) {
+            	m = array[i];
+            }
+        while ((int)m / exp > 0)
+        {
+            int[] bucket = new int[10];
+ 
+            for (int i = 0; i < n; i++)
+                bucket[((int)array[i] / exp) % 10]++;
+            for (int i = 1; i < 10; i++)
+                bucket[i] += bucket[i - 1];
+            for (int i = n - 1; i >= 0; i--)
+                b[--bucket[((int)array[i] / exp) % 10]] = (int)array[i];
+            for (int i = 0; i < n; i++)
+                array[i] = b[i];
+            exp *= 10;        
+        }
+    } 
+	public Comparable[] getList() {
+		return array;
 	}
 	
 	public void heapSort() {
