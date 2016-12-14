@@ -197,4 +197,17 @@ public class Heap implements MyHeap {
 		System.out.println();
 
 	}
+	
+	public static MyArrayList heapSort(MyArrayList list) {
+		MyArrayList data = new MyArrayList();
+		Heap heap = new Heap();
+		for(int i = 0; i < list.size(); i++) {
+			heap.insert(list.get(i));
+		}
+		for(int j = 0; j < list.size() && !(heap.isEmpty()); j++) {
+			data.add(heap.findMin());
+			heap.deleteMin();
+		}
+		return data;
+	}
 }

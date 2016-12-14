@@ -7,7 +7,7 @@ public class MyArrayList implements MyList {
 	private Comparable[] array;
 	
 	public MyArrayList() {
-		array = new Comparable[10];
+		array = new Comparable[500000];
 	}
 	
 	@Override
@@ -292,17 +292,12 @@ public class MyArrayList implements MyList {
 	         }
 	    }
 	
-	public void bubbleSort() 
-	{
+	public void bubbleSort() {
 		int n = size();
         Comparable temp = 0;  
-        for(int i = 0; i < n; i++)
-        {
-            for(int j=1; j < (n-i); j++)
-            {              
-            	if(array[j-1].compareTo(array[j]) > 0)
-            	{
-                //swap the elements
+        for(int i = 0; i < n; i++) {
+            for(int j = 1; j < (n-i); j++) {              
+            	if(array[j-1].compareTo(array[j]) > 0) {
                   temp = array[j-1];
                   array[j-1] = array[j];
                   array[j] = temp;
@@ -311,55 +306,48 @@ public class MyArrayList implements MyList {
         }
     }
 	
-	public void bucketSort(int maxVal) {
+	public void bucketSort(int maxVal) { //maxVal = same max number in the list (Need how many digits it is)
 		int [] bucket = new int[maxVal+1]; 
 	    for (int i = 0; i < bucket.length; i++) {
-	         bucket[i]=0;
+	         bucket[i] = 0;
 	    }
 	    for (int i = 0; i < array.length; i++) {
 	         bucket[(int) array[i]]++;
 	    }
-	    int outPos=0;
+	    int r = 0;
 	    for (int i = 0; i < bucket.length; i++) {
 	    	for (int j = 0; j < bucket[i]; j++) {
-	    		array[outPos++]=i;
+	    		array[r++] = i;
 	    	}
 	    }
 	}
 	
 	public void radixSort() {
-		Comparable m = array[0];
-		int exp = 1;
-		int n = size();
-        int[] b = new int[10];
-        for (int i = 1; i < n; i++)
-            if (array[i].compareTo(m) > 0) {
-            	m = array[i];
+		Comparable list = array[0];
+		int power = 1;
+		int number = size();
+        int[] data = new int[500000];
+        for (int i = 1; i < number; i++)
+            if (array[i].compareTo(list) > 0) {
+            	list = array[i];
             }
-        while ((int)m / exp > 0)
+        while ((int)list / power > 0)
         {
             int[] bucket = new int[10];
  
-            for (int i = 0; i < n; i++)
-                bucket[((int)array[i] / exp) % 10]++;
-            for (int i = 1; i < 10; i++)
+            for(int i = 0; i < number; i++)
+                bucket[((int)array[i] / power) % 10]++;
+            for(int i = 1; i < 10; i++)
                 bucket[i] += bucket[i - 1];
-            for (int i = n - 1; i >= 0; i--)
-                b[--bucket[((int)array[i] / exp) % 10]] = (int)array[i];
-            for (int i = 0; i < n; i++)
-                array[i] = b[i];
-            exp *= 10;        
+            for(int i = number - 1; i >= 0; i--)
+                data[--bucket[((int)array[i] / power) % 10]] = (int)array[i];
+            for(int i = 0; i < number; i++)
+                array[i] = data[i];
+            power *= 10;        
         }
     } 
 	public Comparable[] getList() {
 		return array;
 	}
 	
-	public void heapSort() {
-		
-	}
-	
-	public void treeSort() {
-		
-	}
 }
