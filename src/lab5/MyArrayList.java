@@ -187,15 +187,15 @@ public class MyArrayList implements MyList {
 			return false;
 		}
 	}
-	//http://howtodoinjava.com/algorithm/merge-sort-java-example/
+	//only works with a full array
 	public Comparable[] mergeSort(Comparable[] list) {
-		if(list.length < 2) {
+		if(list.length <= 1) {
 			return list;
 		}
-		Comparable[] left = new Comparable[list.length / 2];
+		Comparable[] left = new Comparable[list.length/2];
 		Comparable[] right = new Comparable[list.length - left.length];
-		System.arraycopy(list, 0, left, 0, left.length);
-		System.arraycopy(list, left.length, right, 0, right.length);
+		left = Arrays.copyOfRange(list, 0, list.length/2);
+		right = Arrays.copyOfRange(list, list.length/2, list.length);
 		mergeSort(left);
 		mergeSort(right);
 		merge(left, right, list);
@@ -220,89 +220,75 @@ public class MyArrayList implements MyList {
 		}
 		System.arraycopy(left, counterLeft, result, counter, left.length - counterLeft);
         System.arraycopy(right, counterRight, result, counter, right.length - counterRight);
-	}
+	}    
 	
-	private void quickSort(int low, int high) {
-	         
-	    int i = low;
-	    int j = high;
-	    // calculate pivot number, I am taking pivot as middle index number
-	    Comparable pivot = array[low+(high-low)/2];
-	    // Divide into two arrays
-	    while (i <= j) {
-	            /**
-	             * In each iteration, we will identify a number from left side which
-	             * is greater then the pivot value, and also we will identify a number
-	             * from right side which is less then the pivot value. Once the search
-	             * is done, then we exchange both numbers.
-	             */
-	            while (array[i].compareTo(pivot) < 0) {
-	                i++;
-	            }
-	            while (array[j].compareTo(pivot) > 0) {
-	                j--;
-	            }
-	            if (i <= j) {
-	            	Comparable temp = array[i];
-	    	        array[i] = array[j];
-	    	        array[j] = temp;
-	                //move index to next position on both sides
-	                i++;
-	                j--;
-	            }
+	public void quickSort(int minIndex, int maxIndex) {//minIndex should be 0, and maxIndex should be list.length -1
+	    int i = minIndex;
+	    int j = maxIndex;
+	    Comparable pivot = array[minIndex+(maxIndex-minIndex)/2]; //middle index as pivot
+	    while(i <= j) {
+	    	while(array[i].compareTo(pivot) < 0) {
+	    		i++;
+	    	}
+	        while(array[j].compareTo(pivot) > 0) {
+	            j--;
 	        }
-	        // call quickSort() method recursively
-	        if (low < j)
-	            quickSort(low, j);
-	        if (i < high)
-	            quickSort(i, high);
+	        if(i <= j) {
+	        	Comparable temp = array[i];
+	    	    array[i] = array[j];
+	    	    array[j] = temp;
+	            i++;
+	            j--;
+	        }
+	    }
+	    if(minIndex < j)
+	        quickSort(minIndex, j);
+	    if(i < maxIndex)
+	        quickSort(i, maxIndex);
 	    }
 	 
-	    public static void recursiveQuickSort(int[] array, int startIdx, int endIdx) 
-	    { 
-	    	int idx = partition(array, startIdx, endIdx); 
-	    // Recursively call quicksort with left part of the partitioned array 
-	    	if (startIdx < idx - 1) { 
-	    		recursiveQuickSort(array, startIdx, idx - 1); 
+	    public static void recursiveQuickSort(Comparable[] array, int minIndex, int maxIndex) { 
+	    	int idx = partition(array, minIndex, maxIndex);
+	    	if (minIndex < idx - 1) { 
+	    		recursiveQuickSort(array, minIndex, idx - 1); 
 	    	} 
-	    // Recursively call quick sort with right part of the partitioned array 
-	    	if (endIdx > idx) { 
-	    		recursiveQuickSort(array, idx, endIdx); 
+	    	if (maxIndex > idx) { 
+	    		recursiveQuickSort(array, idx, maxIndex); 
 	    	} 
 	    }
+	    
 
-	    public static int partition(int[] array, int left, int right) { 
-	    	int pivot = array[left]; 
-	    	// taking first element as pivot while (left <= right) 
-	        //searching number which is greater than pivot, bottom up 
-	    	while (array[left] < pivot) { 
-	    		left++; 
-	   		} 
-	   		//searching number which is less than pivot, top down 
-	   		while (array[right] > pivot) { 
-	   			right--; 
-    		} 
-	   		// swap the values if (left <= right) 
-	   		int tmp = array[left]; 
-	   		array[left] = array[right];
-	   		array[right] = tmp; 
-	   		//increment left index and decrement right index 
-	   		left++; 
-			right--;  
+	   public static int partition(Comparable[] array, int left, int right) { 
+	    	Comparable pivot = array[left]; // taking first element as pivot 
+	    	while (left <= right) {
+	    		while (array[left].compareTo(pivot) < 0) { 
+	    			left++; 
+	    		} 
+	    		while (array[right].compareTo(pivot) > 0) { 
+	    			right--; 
+	    		} 
+	    		if (left <= right) { 
+	    			Comparable tmp = array[left]; 
+	    			array[left] = array[right];
+	    			array[right] = tmp;
+	    			left++; 
+	    			right--; 
+	    		}
+	    	}
 	    	return left; 
 	   }
 	    
-	    public void InsertionSort() {
-	         int j;                     // the number of items sorted so far
-	         Comparable key;                // the item to be inserted
+	    public void InsertionSort() { // descending sort 
+	         int j;                     //# of items sorted
+	         Comparable key;                //data to be sorted
 	         int i;  
 
 	         for (j = 1; j < size(); j++) {
 	               key = array[j];
 	               for(i = j - 1; i >= 0 && (array[i].compareTo(key) < 0); i--) {
-	                     array[ i+1 ] = array[ i ];
+	                     array[i+1] = array[i];
 	              }
-	             array[ i+1 ] = key;    // Put the key in its proper location
+	             array[i+1] = key;
 	         }
 	    }
 	
@@ -310,13 +296,13 @@ public class MyArrayList implements MyList {
 	{
 		int n = size();
         Comparable temp = 0;  
-        for(int i=0; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
             for(int j=1; j < (n-i); j++)
             {              
             	if(array[j-1].compareTo(array[j]) > 0)
             	{
-                //swap the elements!
+                //swap the elements
                   temp = array[j-1];
                   array[j-1] = array[j];
                   array[j] = temp;
